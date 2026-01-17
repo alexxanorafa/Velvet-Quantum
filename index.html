@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Velvet Quantum | Sistema Integral</title>
+    <title>Quantum Velvet | Sistema de Elite</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@100;300;400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -14,7 +14,7 @@
     </button>
 
     <nav id="sidebar" class="sidebar">
-        <div class="sidebar-header"><h3>SISTEMA DE APPS</h3></div>
+        <div class="sidebar-header"><h3>SISTEMA INTEGRAL</h3></div>
         <div class="sidebar-links">
             <a href="https://alexxanorafa.github.io/Alquimia-dos-Sentimentos/">Alquimia dos Sentimentos</a>
             <a href="https://alexxanorafa.github.io/Almas-Conectadas/">Almas Conectadas</a>
@@ -60,7 +60,7 @@
     <div class="main-canvas">
         <div class="visual-side" id="velvetBackground">
             <div class="aura-glow" id="auraGlow"></div>
-            <svg viewBox="0 0 400 800" class="human-svg">
+            <svg viewBox="0 0 400 800" class="human-svg" id="vitruvian">
                 <g id="nadisGroup"></g>
                 <g id="chakraGroup"></g>
             </svg>
@@ -68,9 +68,9 @@
 
         <aside class="panel-side">
             <div class="panel-inner">
-                <h1 id="cName">SELECT CORE</h1>
+                <h1 id="cName">SINTONIA</h1>
                 
-                <div class="quantum-controls">
+                <div class="quantum-box">
                     <button id="calibBtn">AUTO-CALIBRAÇÃO</button>
                     <div class="audio-set-xxii">
                         <button id="muteBtn" class="xxii-btn">MUTE</button>
@@ -78,24 +78,24 @@
                     </div>
                 </div>
 
-                <div class="frequency-display">
+                <div class="frequency-hero">
                     <span id="hzText">000.0</span><small>Hz</small>
                 </div>
 
-                <div class="info-scroller">
+                <div class="data-container">
                     <div class="card">
-                        <label>SINTOMAS / BLOQUEIOS</label>
+                        <label>ESTADO DE BLOQUEIO</label>
                         <ul id="sList"></ul>
                     </div>
                     <div class="card">
-                        <label>CURA ELEMENTAL</label>
+                        <label>CATALISADOR</label>
                         <p id="cTools">---</p>
                     </div>
                 </div>
 
                 <footer class="controls">
                     <input type="range" id="tuner" min="200" max="1000" step="0.01">
-                    <div class="resonance-track"><div id="resFill"></div></div>
+                    <div class="resonance-bar"><div id="resFill"></div></div>
                 </footer>
             </div>
         </aside>

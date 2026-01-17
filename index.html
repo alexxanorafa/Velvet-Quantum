@@ -1,767 +1,105 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ressonância Quântica</title>
-    <style>
-        /* ========== ESTÉTICA v30.0 - O VAZIO ILUMINADO ========== */
-        :root {
-            --void-bg: #020204;
-            --glass: rgba(255, 255, 255, 0.05);
-            --text-muted: rgba(255, 255, 255, 0.6);
-            --text-bright: rgba(255, 255, 255, 0.9);
-            
-            /* Variáveis Dinâmicas (Controladas pelo JS) */
-            --target-hue: 0; /* A cor do Chakra alvo (Vermelho = 0) */
-            --current-hue: 180; /* A cor onde o utilizador está a sintonizar */
-            --resonance-intensity: 0; /* Quão perto está da solução (0 a 1) */
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none; /* Prevenir seleção de texto na interface tátil */
-        }
-
-        body {
-            background-color: var(--void-bg);
-            color: var(--text-bright);
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            /* Fundo subtil de espaço profundo */
-            background-image: 
-                radial-gradient(circle at 50% 50%, rgba(20, 20, 30, 0.2) 0%, transparent 60%),
-                radial-gradient(circle at 80% 20%, rgba(var(--target-hue), 100%, 50%, 0.05) 0%, transparent 40%);
-        }
-
-        /* ========== O NÚCLEO QUÂNTICO (Visualizador) ========== */
-        .quantum-field {
-            position: relative;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            flex: 1;
-        }
-
-        .quantum-core-container {
-            position: relative;
-            width: 300px;
-            height: 300px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* O Orbe de Energia */
-        .quantum-core {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            /* A cor é determinada dinamicamente pela posição do sintonizador */
-            background: hsla(var(--current-hue), 100%, 50%, 0.1);
-            
-            /* Brilho dinâmico: fica mais intenso e focado quando perto da ressonância */
-            box-shadow: 
-                0 0 calc(20px + 30px * var(--resonance-intensity)) hsla(var(--current-hue), 100%, 60%, calc(0.2 + 0.3 * var(--resonance-intensity))),
-                inset 0 0 60px hsla(var(--current-hue), 100%, 50%, calc(0.1 + 0.4 * var(--resonance-intensity)));
-            
-            /* Animação de "respiração" que acalma quando sintonizado */
-            animation: pulse calc(4s - 3s * var(--resonance-intensity)) infinite ease-in-out;
-            
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.3s ease-out;
-            position: relative;
-        }
-
-        /* Efeito de aura externa */
-        .quantum-core::after {
-            content: '';
-            position: absolute;
-            top: -20%; left: -20%; right: -20%; bottom: -20%;
-            border-radius: 50%;
-            border: 1px solid hsla(var(--current-hue), 100%, 50%, 0.1);
-            animation: breathe calc(6s - 4s * var(--resonance-intensity)) infinite ease-in-out;
-            z-index: -1;
-        }
-
-        /* Estado de Harmonização (Sucesso) */
-        .quantum-core.aligned {
-            background: hsla(var(--target-hue), 100%, 50%, 0.8);
-            box-shadow: 
-                0 0 100px hsla(var(--target-hue), 100%, 60%, 0.8),
-                0 0 200px hsla(var(--target-hue), 100%, 50%, 0.4),
-                inset 0 0 60px white;
-            animation: stabilized-glow 3s infinite alternate;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(0.95); opacity: 0.7; filter: blur(2px); }
-            50% { transform: scale(1.05); opacity: 1; filter: blur(0px); }
-        }
-        
-        @keyframes breathe {
-             0%, 100% { transform: scale(0.8); opacity: 0; }
-             50% { transform: scale(1.2); opacity: 0.3; }
-        }
-
-        @keyframes stabilized-glow {
-            0% { box-shadow: 0 0 60px hsla(var(--target-hue), 100%, 60%, 0.6); }
-            100% { box-shadow: 0 0 120px hsla(var(--target-hue), 100%, 60%, 0.9); }
-        }
-
-        /* ========== INTERFACE DE TEXTO (Minimalista) ========== */
-        .interface-layer {
-            position: absolute;
-            top: 40px;
-            width: 100%;
-            text-align: center;
-            padding: 0 20px;
-            pointer-events: none; /* O texto não interfere com o toque */
-        }
-
-        .symptom-label {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            color: var(--text-muted);
-            margin-bottom: 10px;
-        }
-
-        .symptom-text {
-            font-size: 1.4rem;
-            font-weight: 300;
-            letter-spacing: 1px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            transition: opacity 0.5s;
-        }
-
-        /* Área de Conhecimento (Aparece após harmonização) */
-        .knowledge-layer {
-            position: absolute;
-            bottom: 150px;
-            width: 100%;
-            text-align: center;
-            padding: 0 30px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-            pointer-events: none;
-        }
-
-        .knowledge-layer.active {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
-
-        .chakra-name {
-            font-size: 2rem;
-            font-weight: 200;
-            text-transform: uppercase;
-            letter-spacing: 6px;
-            margin-bottom: 15px;
-            color: hsla(var(--target-hue), 100%, 70%, 1);
-        }
-
-        .knowledge-text {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            color: var(--text-bright);
-            max-width: 600px;
-            margin: 0 auto 20px auto;
-        }
-
-        .next-btn {
-            background: var(--glass);
-            border: 1px solid hsla(var(--target-hue), 100%, 50%, 0.3);
-            color: white;
-            padding: 12px 30px;
-            border-radius: 30px;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
-        }
-
-        .next-btn:hover {
-            background: hsla(var(--target-hue), 100%, 50%, 0.2);
-            box-shadow: 0 0 20px hsla(var(--target-hue), 100%, 50%, 0.2);
-        }
-
-        /* ========== SINTONIZADOR (Slider Futurista) ========== */
-        .tuner-container {
-            position: fixed;
-            bottom: 50px;
-            width: 80%;
-            max-width: 500px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* O espectro de frequências (arco-íris subtil) */
-        .tuner-track {
-            width: 100%;
-            height: 6px;
-            border-radius: 3px;
-            background: linear-gradient(to right, 
-                hsl(0, 80%, 40%),   /* Raiz */
-                hsl(30, 80%, 40%),  /* Sacro */
-                hsl(60, 80%, 40%),  /* Plexo */
-                hsl(120, 80%, 40%), /* Coração */
-                hsl(200, 80%, 40%), /* Garganta */
-                hsl(270, 80%, 40%), /* Terceiro Olho */
-                hsl(300, 80%, 40%)  /* Coroa */
-            );
-            opacity: 0.3;
-            position: relative;
-        }
-
-        /* O cursor que o utilizador arrasta */
-        .tuner-knob {
-            position: absolute;
-            top: 50%;
-            left: 0%; /* Controlado via JS */
-            transform: translate(-50%, -50%);
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: white;
-            box-shadow: 
-                0 0 10px white,
-                0 0 30px hsla(var(--current-hue), 100%, 50%, 0.5);
-            cursor: grab;
-            transition: box-shadow 0.1s, transform 0.1s;
-            z-index: 10;
-        }
-
-        .tuner-knob:active {
-            cursor: grabbing;
-            transform: translate(-50%, -50%) scale(1.2);
-        }
-
-        /* O "alvo" invisível (ajuda a perceber onde acertar) */
-        .target-indicator {
-            position: absolute;
-            top: 50%;
-            left: 0%; /* Controlado via JS */
-            transform: translate(-50%, -50%);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid hsla(var(--target-hue), 100%, 50%, 0.5);
-            opacity: 0; /* Invisível por padrão, pode ser tornado visível para "modo fácil" */
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-
-        /* Tela de Início (Necessária para ativar o áudio) */
-        #start-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--void-bg);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            transition: opacity 0.8s;
-        }
-        
-        #start-screen h1 {
-            font-weight: 200;
-            letter-spacing: 8px;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-        }
-        
-        #start-screen p {
-            color: var(--text-muted);
-            margin-bottom: 40px;
-            letter-spacing: 1px;
-        }
-
-        .hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velvet Quantum | Sistema Integral</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@100;300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="start-screen">
-        <h1>Ressonância Quântica</h1>
-        <p>Use auscultadores para harmonização binaural.</p>
-        <button class="next-btn" id="init-btn">Iniciar Imersão</button>
-    </div>
+    <button id="menuBtn" class="menu-trigger">
+        <span></span><span></span>
+    </button>
 
-    <main class="quantum-field">
-        
-        <div class="interface-layer" id="symptom-layer">
-            <div class="symptom-label">Deteção de Perturbação de Campo:</div>
-            <div class="symptom-text" id="current-symptom">
-                Inicializando scanner biométrico...
+    <nav id="sidebar" class="sidebar">
+        <div class="sidebar-header"><h3>SISTEMA DE APPS</h3></div>
+        <div class="sidebar-links">
+            <a href="https://alexxanorafa.github.io/Alquimia-dos-Sentimentos/">Alquimia dos Sentimentos</a>
+            <a href="https://alexxanorafa.github.io/Almas-Conectadas/">Almas Conectadas</a>
+            <a href="https://alexxanorafa.github.io/Aneis_da_Sabedoria/">Anéis da Sabedoria</a>
+            <a href="https://alexxanorafa.github.io/Animais-de-Poder/">Animais de Poder</a>
+            <a href="https://alexxanorafa.github.io/Arvore-da-Vida/">Árvore da Vida</a>
+            <a href="https://alexxanorafa.github.io/Biblioteca-Onirica/">Biblioteca Onírica</a>
+            <a href="https://alexxanorafa.github.io/Buzios/">Búzios</a>
+            <a href="https://alexxanorafa.github.io/Cartas-de-Sibila/">Cartas de Sibila</a>
+            <a href="https://alexxanorafa.github.io/Do-you-love-me/">Do you love me?</a>
+            <a href="https://alexxanorafa.github.io/ECO-SAPIENS/">ECO-SAPIENS</a>
+            <a href="https://alexxanorafa.github.io/Entrecamadas-Telepatia-Proposito/">Entrecamadas</a>
+            <a href="https://alexxanorafa.github.io/Experiencia-Sensorial/">Experiência Sensorial</a>
+            <a href="https://alexxanorafa.github.io/I-Ching-Virtual/">I Ching Virtual</a>
+            <a href="https://alexxanorafa.github.io/Jornada-Arquetipica/">Jornada Arquetípica</a>
+            <a href="https://alexxanorafa.github.io/Jornadas-Mitologica/">Jornada Mitológica</a>
+            <a href="https://alexxanorafa.github.io/Livro-das-Sombras/">Livro das Sombras</a>
+            <a href="https://alexxanorafa.github.io/Magia-das-Cores/">Magia das Cores</a>
+            <a href="https://alexxanorafa.github.io/Murmurios-do-Destino/">Murmúrios do Destino</a>
+            <a href="https://alexxanorafa.github.io/O-Construtor-do-Destino/">O Construtor do Destino</a>
+            <a href="https://alexxanorafa.github.io/Oraculo-das-Pedras/">Oráculo das Pedras</a>
+            <a href="https://alexxanorafa.github.io/Oraculo-dos-Deuses/">Oráculo dos Deuses</a>
+            <a href="https://alexxanorafa.github.io/Oraculo-Numerologico/">Oráculo Numerológico</a>
+            <a href="https://alexxanorafa.github.io/Pendulo-Divinatorio/">Pêndulo Divinatório</a>
+            <a href="https://alexxanorafa.github.io/Portal-das-Almas/">Portal das Almas</a>
+            <a href="https://alexxanorafa.github.io/Potencial-Coletivo/">Potencial Coletivo</a>
+            <a href="https://alexxanorafa.github.io/Runas-Celtas/">Runas Celtas</a>
+            <a href="https://alexxanorafa.github.io/Runas-Estelares/">Runas Estelares</a>
+            <a href="https://alexxanorafa.github.io/Runas-do-Destino/">Runas Nórdicas</a>
+            <a href="https://alexxanorafa.github.io/Simulador-Quantico/">Simulador Quântico</a>
+            <a href="https://alexxanorafa.github.io/Tabuleiro-Quantico/">Tabuleiro Quântico</a>
+            <a href="https://alexxanorafa.github.io/TarodeMarselha/">Tarô de Marselha</a>
+            <a href="https://alexxanorafa.github.io/Tasseografia/">Tasseografia</a>
+            <a href="https://alexxanorafa.github.io/Tempo_e_Sonhos/">Tempo e Sonhos</a>
+            <a href="https://alexxanorafa.github.io/The-Da-Vinci-Code/">The Da Vinci Code</a>
+            <a href="https://alexxanorafa.github.io/Whispering-Shadows/">Whispering Shadows</a>
+            <a href="https://alexxanorafa.github.io/Whispering-Shadows-2/">Whispering Shadows 2</a>
+            <a href="https://alexxanorafa.github.io/Whispering-Shadows-3/">Whispering Shadows 3</a>
+            <a href="https://alexxanorafa.github.io/Xamanismo-Animal/">Xamanismo Animal</a>
+        </div>
+    </nav>
+
+    <div class="main-canvas">
+        <div class="visual-side" id="velvetBackground">
+            <div class="aura-glow" id="auraGlow"></div>
+            <svg viewBox="0 0 400 800" class="human-svg">
+                <g id="nadisGroup"></g>
+                <g id="chakraGroup"></g>
+            </svg>
+        </div>
+
+        <aside class="panel-side">
+            <div class="panel-inner">
+                <h1 id="cName">SELECT CORE</h1>
+                
+                <div class="quantum-controls">
+                    <button id="calibBtn">AUTO-CALIBRAÇÃO</button>
+                    <div class="audio-set-xxii">
+                        <button id="muteBtn" class="xxii-btn">MUTE</button>
+                        <input type="range" id="volRange" min="0" max="0.2" step="0.01" value="0.05">
+                    </div>
+                </div>
+
+                <div class="frequency-display">
+                    <span id="hzText">000.0</span><small>Hz</small>
+                </div>
+
+                <div class="info-scroller">
+                    <div class="card">
+                        <label>SINTOMAS / BLOQUEIOS</label>
+                        <ul id="sList"></ul>
+                    </div>
+                    <div class="card">
+                        <label>CURA ELEMENTAL</label>
+                        <p id="cTools">---</p>
+                    </div>
+                </div>
+
+                <footer class="controls">
+                    <input type="range" id="tuner" min="200" max="1000" step="0.01">
+                    <div class="resonance-track"><div id="resFill"></div></div>
+                </footer>
             </div>
-        </div>
-
-        <div class="quantum-core-container">
-            <div class="quantum-core" id="core-visualizer"></div>
-        </div>
-
-        <div class="knowledge-layer" id="knowledge-layer">
-            <div class="chakra-name" id="chakra-title"></div>
-            <div class="knowledge-text" id="chakra-knowledge"></div>
-            <button class="next-btn" id="next-symptom-btn">Próxima Harmonização</button>
-        </div>
-    </main>
-
-    <div class="tuner-container">
-        <div class="tuner-track" id="tuner-track">
-            <div class="target-indicator" id="target-marker"></div>
-            <div class="tuner-knob" id="tuner-knob"></div>
-        </div>
+        </aside>
     </div>
-
-<script>
-// =================================================================
-// BASE DE DADOS QUÂNTICA (Conteúdo Terapêutico)
-// =================================================================
-const QuantumDatabase = [
-    {
-        id: 'root',
-        name: 'Muladhara (Raiz)',
-        hue: 0, // Vermelho
-        frequency: 396, // Hz (Frequência Solfeggio para libertar medo/culpa)
-        symptoms: [
-            "Sinto uma desconexão profunda com a realidade física.",
-            "Tenho medos constantes sobre segurança financeira e futuro.",
-            "Sinto-me sem chão, como se não pertencesse a este lugar.",
-            "Falta-me vitalidade física e sinto letargia constante."
-        ],
-        knowledge: "Harmonizaste o Chakra Raiz. Ele é a tua fundação energética, ligado à sobrevivência, segurança e ao corpo físico. Quando alinhado, sentes-te seguro, presente e enraizado na terra. A cura reside em aceitar que tens o direito de existir.",
-    },
-    {
-        id: 'sacral',
-        name: 'Svadhisthana (Sacro)',
-        hue: 30, // Laranja
-        frequency: 417, // Hz (Facilitar a mudança e desfazer situações)
-        symptoms: [
-            "A minha criatividade está bloqueada e sinto-me estagnado.",
-            "Tenho dificuldade em sentir prazer ou expressar emoções.",
-            "Sinto culpa em relação aos meus desejos e sexualidade.",
-            "As minhas relações são marcadas por dependência emocional."
-        ],
-        knowledge: "Ativaste o Chakra Sacro, o centro do fluxo, criatividade, prazer e emoções. Quando equilibrado, a vida flui sem resistência, permitindo-te sentir e criar sem culpa. A cura vem de honrar os teus sentimentos como guias válidos.",
-    },
-    {
-        id: 'solar',
-        name: 'Manipura (Plexo Solar)',
-        hue: 60, // Amarelo
-        frequency: 528, // Hz (Transformação e Milagres - Reparação de DNA)
-        symptoms: [
-            "Sinto-me impotente e com baixa autoestima.",
-            "Tenho dificuldade em tomar decisões e impor limites.",
-            "Sinto uma raiva reprimida que afeta a minha digestão.",
-            "Falta-me disciplina para concretizar os meus objetivos."
-        ],
-        knowledge: "Desbloqueaste o Plexo Solar, a fornalha do teu poder pessoal, vontade e autoconfiança. Harmonizado, ele dá-te a energia para agir e transformar a tua realidade. A cura está em reconhecer o teu valor intrínseco e o teu poder de escolha.",
-    },
-    {
-        id: 'heart',
-        name: 'Anahata (Coração)',
-        hue: 120, // Verde
-        frequency: 639, // Hz (Conexão e Relacionamentos)
-        symptoms: [
-            "Carrego mágoas antigas e tenho dificuldade em perdoar.",
-            "Sinto-me isolado e incapaz de confiar nos outros.",
-            "Tenho medo de me abrir ao amor para não sofrer.",
-            "Sinto um peso no peito e falta de compaixão por mim mesmo."
-        ],
-        knowledge: "Abris-te o Chakra do Coração, a ponte entre os teus seres físico e espiritual. É o centro do amor incondicional, compaixão e perdão. Quando flui, sentes uma profunda conexão com tudo o que existe. A cura é o perdão, começando por ti mesmo.",
-    },
-    {
-        id: 'throat',
-        name: 'Vishuddha (Garganta)',
-        hue: 200, // Azul Claro
-        frequency: 741, // Hz (Despertar a Intuição e Expressão)
-        symptoms: [
-            "Tenho medo de falar a minha verdade e ser julgado.",
-            "Sinto um nó na garganta quando preciso de me expressar.",
-            "Tenho dificuldade em ouvir os outros verdadeiramente.",
-            "A minha comunicação é inautêntica ou agressiva."
-        ],
-        knowledge: "Limpaste o Chakra da Garganta, o centro da comunicação e da verdade autêntica. Harmonizado, expressas-te com clareza e integridade, e ouves com empatia. A cura reside em usar a tua voz para criar a tua realidade.",
-    },
-    {
-        id: 'third_eye',
-        name: 'Ajna (Terceiro Olho)',
-        hue: 270, // Índigo/Roxo
-        frequency: 852, // Hz (Retorno à Ordem Espiritual)
-        symptoms: [
-            "Sinto-me perdido e sem direção ou propósito de vida.",
-            "A minha mente está cheia de ruído e confusão constante.",
-            "Tenho dificuldade em confiar na minha intuição.",
-            "Sinto-me preso apenas à realidade material e lógica."
-        ],
-        knowledge: "Despertaste o Terceiro Olho, a sede da intuição, sabedoria e visão interior. Quando alinhado, vês além das ilusões materiais e confias no teu guia interno. A cura vem do silêncio mental e da confiança na tua visão interior.",
-    },
-    {
-        id: 'crown',
-        name: 'Saharara (Coroa)',
-        hue: 300, // Magenta/Violeta
-        frequency: 963, // Hz (Frequência divina, conexão com o Uno)
-        symptoms: [
-            "Sinto um vazio existencial e falta de significado.",
-            "Sinto-me separado do universo e do divino.",
-            "Tenho uma visão cínica ou puramente intelectual da vida.",
-            "Sinto uma desconexão espiritual profunda."
-        ],
-        knowledge: "Conectaste-te ao Chakra da Coroa, o portal para a consciência universal e o divino. Harmonizado, transcendes o ego e sentes a unidade com tudo o que é. A cura é a rendição à sabedoria universal e a compreensão de que nunca estás só.",
-    }
-];
-
-// =================================================================
-// MOTOR DE ÁUDIO BIO-RESSONANTE (Web Audio API)
-// =================================================================
-class AudioEngine {
-    constructor() {
-        this.ctx = null;
-        this.oscillator = null;
-        this.gainNode = null;
-        this.filterNode = null;
-        this.lfo = null;
-        this.lfoGain = null;
-        this.isInitialized = false;
-        this.baseFrequency = 396; // Começa no Root
-    }
-
-    init() {
-        if (this.isInitialized) return;
-        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-        
-        // Cadeia de Áudio: Oscilador -> Filtro -> Ganho -> Saída
-        this.oscillator = this.ctx.createOscillator();
-        this.gainNode = this.ctx.createGain();
-        this.filterNode = this.ctx.createBiquadFilter();
-        
-        // LFO para criar um efeito de "pulsação" subtil (Binaural-ish)
-        this.lfo = this.ctx.createOscillator();
-        this.lfoGain = this.ctx.createGain();
-
-        // Configuração
-        this.oscillator.type = 'sine'; // Onda pura para começar
-        this.oscillator.frequency.setValueAtTime(this.baseFrequency, this.ctx.currentTime);
-        
-        this.filterNode.type = 'lowpass';
-        this.filterNode.frequency.setValueAtTime(1000, this.ctx.currentTime);
-
-        this.gainNode.gain.setValueAtTime(0, this.ctx.currentTime); // Começa mudo
-
-        // Configurar LFO (Low Frequency Oscillator) para modular ligeiramente o tom
-        this.lfo.frequency.value = 4; // 4Hz pulsação (estado Theta/Alpha)
-        this.lfoGain.gain.value = 2; // Intensidade da modulação
-        this.lfo.connect(this.lfoGain);
-        // this.lfoGain.connect(this.oscillator.frequency); // Descomentar para efeito vibrato real
-
-        // Ligações
-        this.oscillator.connect(this.filterNode);
-        this.filterNode.connect(this.gainNode);
-        this.gainNode.connect(this.ctx.destination);
-
-        this.oscillator.start();
-        this.lfo.start();
-        this.isInitialized = true;
-    }
-
-    // Toca o som de fundo (Drone)
-    startDrone() {
-        if (!this.isInitialized) this.init();
-        this.ctx.resume();
-        // Fade in suave
-        this.gainNode.gain.setTargetAtTime(0.15, this.ctx.currentTime, 2);
-    }
-
-    // Atualiza o som baseado na posição do sintonizador (0.0 a 1.0) e na proximidade do alvo
-    updateTuning(sliderPositionNormalized, intensity, targetFreq) {
-        if (!this.isInitialized) return;
-
-        const now = this.ctx.currentTime;
-
-        // 1. Mudar a frequência base conforme a posição do slider
-        // Mapeia 0.0-1.0 para um intervalo de frequências (ex: 300Hz a 1000Hz)
-        let mappedFreq = 300 + (sliderPositionNormalized * 700);
-        
-        // Se estiver muito perto do alvo, "puxa" a frequência para a correta (efeito magnético)
-        if (intensity > 0.8) {
-            // Interpolação suave entre a posição atual e o alvo real
-            mappedFreq = mappedFreq * (1 - intensity) + targetFreq * intensity;
-            // Muda o tipo de onda para algo mais rico quando alinhado
-             if (intensity > 0.95) this.oscillator.type = 'triangle';
-             else this.oscillator.type = 'sine';
-        } else {
-             this.oscillator.type = 'sine';
-        }
-
-        this.oscillator.frequency.setTargetAtTime(mappedFreq, now, 0.1);
-
-        // 2. Mudar o volume e o filtro baseado na intensidade (proximidade)
-        // Quanto mais perto, mais alto e mais claro o som
-        const targetGain = 0.1 + (intensity * 0.2); 
-        this.gainNode.gain.setTargetAtTime(targetGain, now, 0.1);
-
-        const targetFilter = 800 + (intensity * 3000); // Abre o filtro quando perto
-        this.filterNode.frequency.setTargetAtTime(targetFilter, now, 0.1);
-    }
-
-    // Som de sucesso ao harmonizar
-    playHarmonizationTone(targetFreq) {
-        const now = this.ctx.currentTime;
-        // Bloqueia na frequência exata
-        this.oscillator.frequency.setValueAtTime(targetFreq, now);
-        this.oscillator.type = 'sine';
-        // Aumenta volume momentaneamente e depois estabiliza
-        this.gainNode.gain.cancelScheduledValues(now);
-        this.gainNode.gain.setValueAtTime(this.gainNode.gain.value, now);
-        this.gainNode.gain.linearRampToValueAtTime(0.5, now + 0.5); // Pulso de volume
-        this.gainNode.gain.linearRampToValueAtTime(0.2, now + 3); // Estabiliza
-        
-        // Abre totalmente o filtro para um som puro
-        this.filterNode.frequency.setTargetAtTime(5000, now, 0.5);
-    }
-}
-
-
-// =================================================================
-// LÓGICA DA APLICAÇÃO (QuantumResonanceApp)
-// =================================================================
-class QuantumApp {
-    constructor() {
-        this.db = QuantumDatabase;
-        this.audio = new AudioEngine();
-        
-        this.state = {
-            currentTarget: null,
-            currentSymptomIndex: 0,
-            isDragging: false,
-            sliderPosition: 0.5, // 0.0 a 1.0
-            resonanceIntensity: 0, // 0.0 a 1.0
-            isAligned: false
-        };
-
-        this.elements = {
-            startScreen: document.getElementById('start-screen'),
-            initBtn: document.getElementById('init-btn'),
-            symptomLayer: document.getElementById('symptom-layer'),
-            currentSymptomText: document.getElementById('current-symptom'),
-            coreVisualizer: document.getElementById('core-visualizer'),
-            tunerTrack: document.getElementById('tuner-track'),
-            tunerKnob: document.getElementById('tuner-knob'),
-            targetMarker: document.getElementById('target-marker'),
-            knowledgeLayer: document.getElementById('knowledge-layer'),
-            chakraTitle: document.getElementById('chakra-title'),
-            chakraKnowledge: document.getElementById('chakra-knowledge'),
-            nextBtn: document.getElementById('next-symptom-btn')
-        };
-
-        this.init();
-    }
-
-    init() {
-        this.setupEventListeners();
-    }
-
-    setupEventListeners() {
-        // Iniciar a experiência (necessário para áudio)
-        this.elements.initBtn.addEventListener('click', () => {
-            this.elements.startScreen.classList.add('hidden');
-            this.audio.init();
-            this.audio.startDrone();
-            this.loadNewTarget();
-        });
-
-        // Botão de próximo sintoma
-        this.elements.nextBtn.addEventListener('click', () => {
-            this.loadNewTarget();
-        });
-
-        // Controles do Sintonizador (Mouse e Toque)
-        const track = this.elements.tunerTrack;
-
-        const startDrag = (e) => {
-            if (this.state.isAligned) return; // Bloqueia se já estiver alinhado
-            this.state.isDragging = true;
-            this.updateTunerPosition(e);
-        };
-
-        const doDrag = (e) => {
-            if (!this.state.isDragging || this.state.isAligned) return;
-            this.updateTunerPosition(e);
-            this.calculateResonance();
-            this.updateVisualsAndAudio();
-        };
-
-        const endDrag = () => {
-            this.state.isDragging = false;
-        };
-
-        // Mouse
-        track.addEventListener('mousedown', startDrag);
-        document.addEventListener('mousemove', doDrag);
-        document.addEventListener('mouseup', endDrag);
-
-        // Toque
-        track.addEventListener('touchstart', startDrag, { passive: false });
-        document.addEventListener('touchmove', doDrag, { passive: false });
-        document.addEventListener('touchend', endDrag);
-    }
-
-    // Seleciona um Chakra e um sintoma aleatório
-    loadNewTarget() {
-        // Reset do estado
-        this.state.isAligned = false;
-        this.state.resonanceIntensity = 0;
-        this.elements.coreVisualizer.classList.remove('aligned');
-        this.elements.knowledgeLayer.classList.remove('active');
-        this.elements.symptomLayer.style.opacity = 1;
-
-        // Escolher Chakra aleatório
-        const randomChakraIndex = Math.floor(Math.random() * this.db.length);
-        this.state.currentTarget = this.db[randomChakraIndex];
-
-        // Escolher sintoma aleatório desse Chakra
-        const randomSymptomIndex = Math.floor(Math.random() * this.state.currentTarget.symptoms.length);
-        const symptom = this.state.currentTarget.symptoms[randomSymptomIndex];
-
-        // Atualizar UI
-        this.elements.currentSymptomText.style.opacity = 0;
-        setTimeout(() => {
-            this.elements.currentSymptomText.textContent = `"${symptom}"`;
-            this.elements.currentSymptomText.style.opacity = 1;
-        }, 500);
-
-        // Definir a posição do alvo invisível no slider
-        // Mapeia a Matiz (Hue 0-300) para uma posição (0.0-1.0) no slider
-        const targetPos = this.state.currentTarget.hue / 300;
-        this.elements.targetMarker.style.left = `${targetPos * 100}%`;
-
-        // Resetar posição do knob para o meio ou uma posição aleatória longe do alvo
-        this.state.sliderPosition = Math.random(); 
-        this.updateKnobVisual();
-        this.calculateResonance();
-        this.updateVisualsAndAudio();
-    }
-
-    // Atualiza a posição do slider baseado no input
-    updateTunerPosition(e) {
-        const trackRect = this.elements.tunerTrack.getBoundingClientRect();
-        let clientX = e.clientX || e.touches[0].clientX;
-        
-        // Calcular posição relativa dentro da track
-        let position = (clientX - trackRect.left) / trackRect.width;
-        
-        // Limitar entre 0 e 1
-        position = Math.max(0, Math.min(1, position));
-        
-        this.state.sliderPosition = position;
-        this.updateKnobVisual();
-    }
-
-    updateKnobVisual() {
-        this.elements.tunerKnob.style.left = `${this.state.sliderPosition * 100}%`;
-    }
-
-    // Calcula quão perto o utilizador está do alvo (A mecânica "Quente/Frio")
-    calculateResonance() {
-        if (!this.state.currentTarget) return;
-
-        // Posição alvo normalizada (0.0 - 1.0)
-        const targetPos = this.state.currentTarget.hue / 300;
-        // Distância absoluta
-        const distance = Math.abs(targetPos - this.state.sliderPosition);
-
-        // Zona de sucesso (5% de tolerância)
-        const successThreshold = 0.05; 
-        
-        if (distance < successThreshold) {
-            if (!this.state.isAligned) {
-                this.triggerHarmonization();
-            }
-        }
-
-        // Calcular intensidade (Inverso da distância). 
-        // 1.0 = no alvo, 0.0 = muito longe.
-        // A fórmula cria uma curva onde a intensidade aumenta rapidamente perto do alvo.
-        this.state.resonanceIntensity = Math.max(0, 1 - (distance * 3)); 
-    }
-
-    updateVisualsAndAudio() {
-        // 1. Atualizar Variáveis CSS
-        const root = document.documentElement;
-        
-        // A cor atual baseada na posição do slider (Mapeia 0-1 para Hue 0-300)
-        const currentHue = this.state.sliderPosition * 300;
-        root.style.setProperty('--current-hue', currentHue);
-
-        // A intensidade da ressonância
-        root.style.setProperty('--resonance-intensity', this.state.resonanceIntensity);
-
-        // Se tiver alvo, define a cor alvo
-        if (this.state.currentTarget) {
-            root.style.setProperty('--target-hue', this.state.currentTarget.hue);
-        }
-
-        // 2. Atualizar Áudio
-        this.audio.updateTuning(
-            this.state.sliderPosition, 
-            this.state.resonanceIntensity, 
-            this.state.currentTarget ? this.state.currentTarget.frequency : 396
-        );
-    }
-
-    // Estado de Vitória
-    triggerHarmonization() {
-        this.state.isAligned = true;
-        this.state.resonanceIntensity = 1;
-        
-        // Bloquear o knob na posição exata do alvo
-        this.state.sliderPosition = this.state.currentTarget.hue / 300;
-        this.updateKnobVisual();
-        
-        // Feedback Visual
-        this.elements.coreVisualizer.classList.add('aligned');
-        this.elements.symptomLayer.style.opacity = 0;
-
-        // Feedback de Áudio
-        this.audio.playHarmonizationTone(this.state.currentTarget.frequency);
-
-        // Mostrar Conhecimento (com delay dramático)
-        setTimeout(() => {
-            this.elements.chakraTitle.textContent = this.state.currentTarget.name;
-            this.elements.chakraKnowledge.textContent = this.state.currentTarget.knowledge;
-            this.elements.knowledgeLayer.classList.add('active');
-        }, 1500);
-    }
-}
-
-// Inicializar a aplicação quando o DOM estiver pronto
-document.addEventListener('DOMContentLoaded', () => {
-    new QuantumApp();
-});
-
-</script>
+    <script src="script.js"></script>
 </body>
 </html>
